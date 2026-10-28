@@ -1,1 +1,0 @@
-"""Shared geometry utilities."""

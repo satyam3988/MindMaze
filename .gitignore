@@ -21,3 +21,6 @@
 !**/artifacts/.gitkeep
 .DS_Store
 Thumbs.db
+
+# Additional Robotic Mind local output
+.cache/

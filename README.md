@@ -1,150 +1,249 @@
-# MindMaze
+# Robotic Mind
 
-### Shared intelligence. Autonomous search. Visual navigation.
+**A shared cognitive workspace for humans and autonomous machines.**
 
-Two simulation-first robotics projects in one workspace: **Robotic Mind**, a shared cognitive space for humans and autonomous robots, and **Vector Maze**, a vision-driven maze navigation system. Each project has its own code, dependencies, tests, and launch commands.
+One person. Four autonomous scouts. One persistent space. When one machine discovers something, the entire team can use that knowledge.
 
-![Warehouse Alpha — four independent scouts in the actual Webots simulation](robotic-mind/docs/images/warehouse-overview.png)
+Robots usually operate as isolated tools: their observations disappear into individual logs, and the next robot has to learn the same thing again. Robotic Mind makes robots first-class members of a collaborative space, with identities, capabilities, current cognitive state, durable memory, and shared knowledge with provenance.
 
-> All robotic scene images below are genuine captures of the running Webots simulation. UI images show the working application with authenticated NVIDIA Nemotron orchestration. Physical robot hardware has not been deployed.
+The platform, robot SDK, dashboard, and Webots world are contained in this repository.
 
-## Choose a project
+## What works
 
-| Project | What it demonstrates | Start here |
-|---|---|---|
-| **Robotic Mind** | Four autonomous scouts, their own cameras, persistent individual/shared memory, a live neural knowledge graph, and NVIDIA Nemotron coordination through Nebius Token Factory | [Overview and setup](robotic-mind/README.md) |
-| **Vector Maze** | RGB camera → occupancy map → A* path planning → waypoint control, with Pygame demos and Webots integration | [Overview and setup](vector-maze/README.md) |
+- Create/join spaces with random readable invites; humans and robots appear in one membership list.
+- Register arbitrary robot manifests through a reusable Python SDK and typed WebSocket handshake.
+- Persist individual observations, Deep Mind, shared discoveries, region outcomes, mission results, and events in SQLite.
+- Inspect explicit Active Mind state, memory growth, live JPEG cameras, telemetry, assignments, and shared knowledge in a responsive React dashboard.
+- Run a new Warehouse Alpha Webots world with four independently controlled aerial agents, their own downward RGB cameras, and deterministic waypoint sweeps.
+- Detect red parcels using camera pixels and OpenCV; estimate their world positions and spatially merge corroborating observations.
+- Interpret, coordinate, and synthesize missions through interchangeable mock/Nebius providers with validated outputs and visible failures.
 
-The projects are normal folders in this repository, not Git submodules. They run independently. Open **[MindMaze.code-workspace](MindMaze.code-workspace)** in VS Code to see both projects together.
+**Verified:** the real Webots/SDK/camera vertical slice completes in both development mock mode and **strict Nebius/NVIDIA Nemotron mode** with **3 unique red objects, 4/4 sectors cleared, 100% coverage**. Authenticated mission understanding, multi-agent planning, and final synthesis all succeeded. See [recorded inference evidence](docs/NEBIUS_VALIDATION.json).
 
-## Robotic Mind: a team that learns together
+![Mission control during a live NVIDIA Nemotron mission](docs/images/mission-control-live.png)
+![Neural Group Mind with persistent shared knowledge](docs/images/neural-group-mind.png)
 
-Give the team a mission:
+The dashboard is a lightweight telemetry map. The separate Webots desktop application provides the full 3D simulation.
 
-> **Find all red objects. Split up and avoid searching the same places twice.**
+## The robotic setup
 
-NVIDIA Nemotron interprets the command and assigns regions to capable robots. Each scout executes a deterministic sweep and detects red parcels using its own camera. Observations become individual memories; verified discoveries enter Group Mind with provenance and spatial deduplication. Nemotron then summarizes the persisted results.
+These images were captured from the running Webots scene and application. The hardware shown is simulated; the mission, camera processing, memory, and authenticated Nemotron calls are live.
 
-**Verified live result: 3 unique red objects · 4/4 sectors cleared · 4 scouts · 100% planned coverage.** Strict Nebius mode was used, with no mock fallback. [Inference evidence](robotic-mind/docs/NEBIUS_VALIDATION.json).
+![Warehouse Alpha and the four autonomous scouts](docs/images/warehouse-overview.png)
 
-### Mission control
-
-![Working mission control during a real search](robotic-mind/docs/images/mission-control-live.png)
-
-Live robot telemetry, camera feeds, assignments, mission stages, an activity timeline, and inspectable Active Mind/Deep Mind state share one dashboard.
-
-### The collective as a neural graph
-
-![Group Mind — neurons linked by actual mission and memory evidence](robotic-mind/docs/images/neural-group-mind.png)
-
-Each neuron represents an agent, mission, observation, memory, discovery, or mapped region. Connections trace stored evidence: who observed an object, what became memory, and what knowledge was shared. New evidence activates the network as the robots work. Search, filters, zoom, pan, and a neuron inspector make the relationships explorable.
-
-![A discovery and its inspectable provenance](robotic-mind/docs/images/discovery-evidence.png)
-
-### The simulation, from every angle
-
-| Top-down layout | Scout close-up |
+| Warehouse from above | Scout camera platform |
 |---|---|
-| ![Warehouse layout with scouts and colored parcels](robotic-mind/docs/images/warehouse-topdown.png) | ![The simulated Scout platform](robotic-mind/docs/images/scout-closeup.png) |
+| ![Top-down warehouse layout](docs/images/warehouse-topdown.png) | ![Scout aerial agent close-up](docs/images/scout-closeup.png) |
 
-![Low-angle warehouse view](robotic-mind/docs/images/warehouse-low-angle.png)
+![Low-angle warehouse view](docs/images/warehouse-low-angle.png)
+![Four independent RGB camera feeds](docs/images/robot-camera-feeds.png)
+![Inspectable discovery provenance](docs/images/discovery-evidence.png)
 
-![Four actual RGB camera feeds](robotic-mind/docs/images/robot-camera-feeds.png)
+Reproduce these with `python scripts/capture_setup.py` while Webots is running, and `python scripts/capture_showcase.py` for UI screenshots during a real mission. Hide camera overlays using **Overlays → Hide All Camera Overlays** before scene capture. Scene capture only changes the documentation viewpoint; it never supplies object locations to perception.
 
-The warehouse is 16 × 16 m with colored parcels, obstacles, four search regions, and four independently controlled aerial scouts. Flight is simplified kinematic motion. Camera perception uses OpenCV; inference handles mission-level decisions rather than low-level movement.
+## Neural Group Mind
 
-### Run Robotic Mind
+Open **http://localhost:5173/?view=group** to explore the collective as a neural graph. Robots, humans, missions, assignments, observations, memories, discoveries, and mapped regions become real selectable neurons. Their connections come from stored provenance: observed, remembers, shares, discovered, confirmed, assigned, and cleared. Private evidence remains distinguishable from shared knowledge.
 
-Requires Windows, Python 3.11+, Node.js, and Webots R2025a. From the cloned MindMaze folder:
+New evidence pulses as it arrives; signals follow recent evidence paths and active assignments. Idle memory stays visible. Search, category filters, zoom, pan, keyboard selection, label controls, and animation pause make the graph explorable. Select a neuron to inspect its contributor, confidence, related records, and stored evidence. Shared records remain available below the visualization.
+
+The backend projects this view from SQLite plus configured world regions at `/api/spaces/{id}/mind/graph`; the browser refreshes it every two seconds. It adds no invented semantic connections or hidden model reasoning. Graphs above 450 nodes show an explicit truncation notice. A live strict Nemotron mission grew the network from **108 to 127 neurons** and **303 to 360 connections**, while retaining the three unique red discoveries.
+
+![Neural Group Mind](docs/images/neural-mind.png)
+
+## Architecture
+
+```mermaid
+flowchart TD
+  Human[Human / text or browser voice] --> UI[React mission control]
+  UI <-->|REST + space WebSocket| API[FastAPI / one local process]
+  API --> Spaces[Spaces + capability registry]
+  API --> Mission[Mission coordinator]
+  Mission --> LLM[LLMProvider]
+  LLM --> Mock[Development mock]
+  LLM --> Nebius[Nebius Token Factory / NVIDIA Nemotron]
+  API --> Bus[Domain event bus]
+  Bus --> Mind[Individual Mind + Group Mind]
+  Mind --> DB[(SQLite / SQLAlchemy)]
+  Mission --> DB
+  Bus --> DB
+  Bus --> UI
+  SDK[RobotClient SDK] <-->|Typed robot WebSocket + binary JPEG| API
+  SDK --> Adapter[RobotAdapter]
+  Adapter --> Webots[WebotsDroneAdapter]
+  Adapter -.-> Rover[Future RoverAdapter / hardware]
+```
+
+`RobotAgent` wraps a manifest and generic capability checks. No mission code branches on `agent_type == "drone"`. The coordinator requires `navigate`, `camera`, and `detect_color`. Simulator control is isolated from the backend and SDK.
+
+**Active Mind** is structured application state: objective, observation summary, decision summary, current action, next step, assignment, confidence, status, position, and timestamp. It is not model chain-of-thought. It is transient; meaningful changes create durable timeline events.
+
+**Deep Mind** stores typed memory entries with ownership, category, title, summary, tags, structured evidence, importance, mission reference, sharing flag, and timestamp. Robot counters come from stored records.
+
+**Group Mind** combines persistent shared memories, discoveries with first discoverer and corroborating observers, cleared sectors, assignments, and results. Robots receive current shared discoveries on connection and live discovery/clearance events afterward. Planning uses existing Group Mind context.
+
+## Setup on Windows
+
+Requires Python 3.11+ (tested with 3.12.10), Node.js (tested with 24.15.0), and Webots R2025a. Run commands from the new repository:
 
 ```powershell
-cd robotic-mind
+git clone https://github.com/satyam3988/MindMaze.git
+cd MindMaze
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[dev]"
 Copy-Item .env.example .env
 cd frontend
 npm.cmd ci
 cd ..
+```
+
+An exact Python environment snapshot is in `requirements.lock.txt`; use `pip install -r requirements.lock.txt` followed by `pip install -e . --no-deps` to reproduce it. The frontend dependency graph is locked by `frontend/package-lock.json`.
+
+`npm.cmd` works even when PowerShell blocks the installed `npm.ps1` wrapper. Activation of the Python environment is unnecessary when using the explicit interpreter path.
+
+### One command
+
+```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/start_demo.ps1
 ```
 
-The default example configuration uses an explicitly labeled development mock. To use the verified NVIDIA path, configure your **local** `.env`:
+Open **http://localhost:5173**. Backend docs: **http://localhost:8000/docs**.
+
+The launcher starts the backend, waits for readiness, idempotently creates/reuses Warehouse Alpha, starts Vite, and launches Webots with the generated invite. The scouts register themselves; seed code never inserts robots. Closing Webots stops the launcher-owned backend/frontend process trees. Logs are in `artifacts/`. Keep ports 8000 and 5173 free before launching. The script's process-scoped execution-policy option does not change your machine's persistent policy.
+
+### Three terminals
+
+Backend:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/start_backend.py
+```
+
+Frontend:
+
+```powershell
+cd frontend
+npm.cmd run dev
+```
+
+Seed the space, then supply its printed invite to Webots:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/seed_demo.py
+.\.venv\Scripts\python.exe scripts/launch_webots.py --invite RM-XXXXXX
+```
+
+`RM-XXXXXX` is a placeholder; use your generated invite. Webots is discovered in Program Files or `%LOCALAPPDATA%/Programs/Webots`, or through `WEBOTS_HOME`. The launcher writes a machine-local ignored `runtime.ini` with this repository's Python interpreter.
+
+Useful VS Code tasks: **Start Backend**, **Start Frontend**, **Launch Webots**, **Run Tests**, and **Start Robotic Mind Demo**.
+
+## Nebius / Nemotron
+
+Default development mode is explicit and deterministic:
+
+```dotenv
+LLM_MODE=mock
+STRICT_HACKATHON_MODE=false
+```
+
+For the hackathon recording, edit your ignored `.env` locally and restart the backend:
 
 ```dotenv
 LLM_MODE=nebius
 STRICT_HACKATHON_MODE=true
-NEBIUS_API_KEY=your-local-key
+NEBIUS_API_KEY=your-key-here
 NEBIUS_BASE_URL=https://api.tokenfactory.nebius.com/v1
 NEBIUS_MODEL=nvidia/nemotron-3-super-120b-a12b
 ```
 
-Open **http://localhost:5173** for mission control, **http://localhost:5173/?view=group** for the neural graph, and **http://localhost:8000/docs** for API documentation. Webots opens as a separate desktop application.
+The exact configured and live-verified model is **`nvidia/nemotron-3-super-120b-a12b`**. Earlier development runs used **`deterministic-mock`**. The authenticated strict-mode run completed all three orchestration calls on the first attempt. Strict mode refuses mock configuration and missing credentials. Nebius failures never fall back to mock. The browser sees public provider/model metadata; request timings are recorded in domain events. Credentials and model reasoning are never exposed.
 
-See [the complete build report](robotic-mind/docs/BUILD_REPORT.md) and [the protocol reference](robotic-mind/docs/PROTOCOL.md) for architecture, persistence, SDK, schemas, and limitations. The Python suite has **39 passing tests**; frontend lint/typecheck/build and browser interactions were validated.
+Three meaningful model operations drive the mission: command → `MissionSpec`, manifests/positions/regions/shared context → validated `MissionPlan`, and persisted Group Mind facts → `MissionResult`. Invalid JSON/schema output is retried once at the application level; transport retries are bounded separately. Numeric synthesis facts are checked against persistence before success. Models never control rotors or navigation ticks.
 
-## Vector Maze: navigation from visual evidence
+The OpenAI Python SDK is used only as an OpenAI-compatible HTTP client for Nebius. Official [Nebius example](https://github.com/nebius/token-factory-cookbook/blob/main/models/nemotron/nemotron3-super-120B.md) documents the same model ID and also shows the regional base URL `https://api.tokenfactory.us-central1.nebius.com/v1/`; override the configurable endpoint if your account requires it. The default endpoint above was verified with an authenticated end-to-end run on October 28, 2026.
 
-Vector Maze explores a different part of the robotics stack: recover free/occupied space from an overhead camera, plan a route, and execute it through a replaceable robot adapter. It includes camera-to-grid mapping, A* search, footprint-aware collision checks, waypoint control, Pygame visualization, and a Webots Vector-style robot.
+## Demo sequence
 
-It is a separate navigation prototype, not a hidden dependency of Robotic Mind. Its cameras, coordinate conventions, setup, and test commands are documented in [its own README](vector-maze/README.md).
+1. Launch the demo and verify four scouts show **ONLINE**.
+2. Enter: **Find all red objects. Split up and avoid searching the same places twice.**
+3. Watch understanding, planning, assignment, execution, synthesis, and completion.
+4. Watch the Webots scouts move simultaneously through separate sectors. Inspect their own cameras in the dashboard.
+5. Click a scout; inspect Active Mind and accumulating Deep Mind entries.
+6. Open Group Mind; inspect each discovery's position, confidence, discoverer, and confirming observers.
+7. Verify **3 unique objects · 4 sectors · 100% coverage**. The default non-overlapping layout need not produce a cross-robot duplicate; spatial merging and corroborating provenance are independently tested.
+8. Repeat the mission to demonstrate persistent shared knowledge. Discoveries remain unique while mission observations and memories accumulate.
 
-![Vector Maze reaching its goal along the planned path](vector-maze/docs/images/navigation.png)
+Voice input uses browser `SpeechRecognition`/`webkitSpeechRecognition` when available. Transcription fills the command input for review; it never auto-submits. Unsupported browsers retain fully functional text input. Voice microphone permissions/network availability depend on the browser and were not tested with live audio.
 
-The captured run reached its goal in 1,292 simulation steps with **zero collisions**. The standard test suite passed **124 tests**; **6 opt-in Webots integration tests** were skipped in this validation run.
+## Simulation and perception
+
+Warehouse Alpha is 16 × 16 m in ENU coordinates (`x` east, `y` north, `z` up), split into four regions loaded from a generic world model. Four 16-point serpentine sweeps run at 3.5 m altitude and a maximum 2.4 m/s. A simplified rigid visual quadrotor uses continuous self-pose updates, not rotor physics or teleportation between waypoints. Shelves are below flight altitude; this is not obstacle avoidance or SLAM.
+
+Three red parcels and three blue/yellow/green distractors live only in the world generator. Controllers do not query their locations. Every robot reads its own 320 × 240 camera, segments two HSV red hue intervals, rejects tiny/edge-clipped candidates, and projects the centroid onto an assumed parcel-top plane using pose, FOV, camera offset, and yaw. See the official [Webots camera reference](https://github.com/cyberbotics/webots/blob/R2025a/docs/reference/camera.md) for BGRA image format and horizontal FOV semantics.
+
+`simulation/webots/config/sensors.json` supplies per-scout brightness, blur, noise, color shift, horizontal FOV, and yaw. Environment variables `CAMERA_BRIGHTNESS`, `CAMERA_BLUR`, `CAMERA_NOISE`, and `CAMERA_COLOR_SHIFT` override image transformations. Restart Webots after changes. Default transformations are conservative. Large color/geometry changes can invalidate the simple detector or sweep coverage assumptions.
+
+Each local target is reported once per region sweep. Confirmed observations (`confidence >= 0.7`) enter Group Mind. Same label + XY distance within the configurable 0.8 m radius merges evidence, preserves the first discoverer, adds observers, and retains the maximum observed confidence. This confidence is a segmentation heuristic, not a calibrated probability. World coordinates are approximate, not ground-truth localization.
+
+Cameras travel as bounded binary JPEG frames on the robot connection. The backend retains the latest frame in memory; the browser fetches it around 1.4 FPS. JSON WebSockets carry state/events, never raw video. Camera frames and telemetry are transient. SQLite is not written every simulation tick.
+
+## Robot SDK
+
+```python
+from robotic_mind_sdk import AgentManifest, RobotClient
+from robotic_mind_sdk.models import MemoryEntry, Telemetry
+
+manifest = AgentManifest(
+    agent_id="rover-05",
+    display_name="Rover 05",
+    agent_type="rover",
+    capabilities=["navigate", "camera", "detect_color"],
+    sensors=["rgb_camera", "position"],
+    actions=["move_to", "scan"],
+)
+robot = RobotClient("Rover 05", "RM-XXXXXX", manifest, server_url="http://localhost:8000").connect()
+robot.connected.wait(5)
+robot.publish_telemetry(Telemetry(position={"x": 0, "y": 0, "z": 0}))
+robot.remember(MemoryEntry(title="Connected to shared workspace"))
+assignment = robot.next_assignment()
+# Execute with your adapter, then report started/progress/completed.
+robot.close()
+```
+
+The SDK also exposes `publish_observation`, `update_active_mind`, `publish_shared_memory`, `publish_camera`, `task_status`, and the live `group_mind` cache. Its background transport joins, heartbeats, handles assignments/knowledge updates, and reconnects. Future hardware supplies a `RobotAdapter` implementing `get_pose`, `move_to`, `stop`, `capture_camera`, and `capabilities`. The SDK package has no Webots import.
+
+A fifth agent can join without backend edits. The planner can allocate multiple regions per agent; having more agents than regions does not fabricate extra tasks. This demo's floor sweeps and projection are designed for aerial cameras; a physical rover needs a suitable world route and camera projection implementation in its adapter/controller.
+
+## Validation
 
 ```powershell
-cd vector-maze
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
-.\.venv\Scripts\python.exe scripts/run_simulation.py
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\ruff.exe check .
+.\.venv\Scripts\ruff.exe format --check .
+cd frontend
+npm.cmd run lint
+npm.cmd run typecheck
+npm.cmd run build
+cd ..
 ```
 
-See the project README for perception and Webots launch options.
+Ordinary tests need no Webots GUI. They cover spaces/invites, registration/manifest validation, capabilities, heartbeats, state and memory, persistence, observations/deduplication/provenance/confidence, mission transitions and failure, plan parsing/validation, mock/Nebius configuration and retries, event subscriptions, browser WebSocket events, SDK wire messages, an actual SDK TCP connection, and camera perception.
 
-## Repository layout
+The suite also verifies neural graph provenance, private/shared boundaries, space isolation, bounded output, and the graph API. Run `python scripts/check_neural_browser.py` for neural controls/mobile checks and `python scripts/check_neural_growth.py` to submit a real mission and verify visible graph growth.
 
-```text
-MindMaze/
-├── README.md
-├── MindMaze.code-workspace
-├── robotic-mind/
-│   ├── src/robotic_mind/        Platform, minds, missions, API, persistence, LLM
-│   ├── src/robotic_mind_sdk/    Reusable RobotClient and RobotAdapter
-│   ├── frontend/              React + TypeScript mission control
-│   ├── simulation/webots/     Warehouse, scouts, own-camera perception
-│   ├── scripts/               Launch, seed, acceptance, screenshots
-│   ├── tests/
-│   └── docs/images/           Actual simulation and UI captures
-└── vector-maze/
-    ├── src/vector_maze/        Mapping, planning, control, robot adapters
-    ├── webots/                Vector-style robot, maze, controllers
-    ├── scripts/               Simulation and perception demos
-    ├── configs/
-    └── tests/
-```
-
-```mermaid
-flowchart LR
-  MM[MindMaze] --> RM[Robotic Mind]
-  MM --> VM[Vector Maze]
-  RM --> Team[Humans + autonomous robot members]
-  Team --> Mind[Individual memory + Group Mind]
-  Mind --> AI[NVIDIA Nemotron / Nebius]
-  Team --> Fleet[Multi-agent Webots search]
-  VM --> Vision[RGB camera / occupancy mapping]
-  Vision --> Plan[A* planning / waypoint control]
-  Plan --> Robot[Pygame or Webots robot]
-```
-
-## Capture the demo again
-
-With Robotic Mind running, use its documentation tools from `robotic-mind/`:
+For real Webots acceptance, with all services running:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts/capture_setup.py
-.\.venv\Scripts\python.exe scripts/capture_showcase.py
+.\.venv\Scripts\python.exe scripts/check_demo.py
 ```
 
-The first exports actual Webots views. Hide camera overlays in Webots first using **Overlays → Hide All Camera Overlays**. The second submits a live mission and captures the UI. Images are saved to `robotic-mind/docs/images/` for the README.
+This submits a real mission, waits for four online robots, and asserts the final count/coverage. It saves `artifacts/demo-acceptance.json` and four actual camera frames. It labels mock versus real inference explicitly.
 
-The repository excludes local `.env` files, API credentials, SQLite databases, Python environments, npm dependencies, logs, build output, and simulator runtime settings.
+For the running browser UI:
+
+```powershell
+.\.venv\Scripts\python.exe -m playwright install chromium
+.\.venv\Scripts\python.exe scripts/check_browser.py
+```
+
+Review [the build report](docs/BUILD_REPORT.md) and [the API/protocol reference](docs/PROTOCOL.md) for complete schemas, results, endpoint list, repository tree, limitations, and follow-up work.

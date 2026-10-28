@@ -1,13 +1,13 @@
 # Robotic Mind — build and acceptance report
 
-Date: October 28, 2026. New repository: `C:\Users\newuser3714\OneDrive\Desktop\hacakathon\robotic-mind`. Git initialized locally. `vector-maze` was inspected for installation/launch conventions and was not modified. No unrelated product code was copied.
+Date: October 28, 2026. Robotic Mind is a self-contained project published at https://github.com/satyam3988/MindMaze. Its backend, SDK, frontend, simulation, tests, and documentation live directly at the repository root.
 
 **Live NVIDIA acceptance passed:** authenticated strict-mode Nemotron mission completed on October 28, 2026 at 4:11 p.m. Pacific: three unique red objects, four sectors cleared, four participating scouts, 100% coverage. Understanding took 2.603 s, planning 3.202 s, and synthesis 2.571 s, all on the first attempt. See [credential-free validation evidence](NEBIUS_VALIDATION.json).
 
 ## 1. Final repository tree
 
 ```text
-robotic-mind/
+MindMaze/
 ├── .git/                         independent local repository
 ├── .vscode/                      tasks, interpreter/testing settings, debugger
 ├── .env.example                  safe configuration template
@@ -167,7 +167,8 @@ The live acceptance result is saved in `artifacts/demo-acceptance.json`; real ca
 From PowerShell:
 
 ```powershell
-cd C:\Users\newuser3714\OneDrive\Desktop\hacakathon\robotic-mind
+git clone https://github.com/satyam3988/MindMaze.git
+cd MindMaze
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[dev]"
 Copy-Item .env.example .env
