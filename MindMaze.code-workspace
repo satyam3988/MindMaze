@@ -1,0 +1,7 @@
+{
+  "folders": [
+    {"name": "Robotic Mind — shared intelligence", "path": "robotic-mind"},
+    {"name": "Vector Maze — visual navigation", "path": "vector-maze"}
+  ],
+  "settings": {"window.title": "MindMaze — ${activeEditorShort}"}
+}

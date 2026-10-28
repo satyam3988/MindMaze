@@ -1,0 +1,22 @@
+#VRML_SIM R2025a utf8
+PROTO MazeWall [
+  field SFVec3f translation 0 0 0
+  field SFVec3f size 0.1 0.1 0.12
+  field SFString name "maze wall"
+] {
+  Solid {
+    translation IS translation
+    name IS name
+    children [
+      Shape {
+        appearance PBRAppearance {
+          baseColor 0.62 0.43 0.25
+          roughness 0.9
+          metalness 0
+        }
+        geometry Box { size IS size }
+      }
+    ]
+    boundingObject Box { size IS size }
+  }
+}

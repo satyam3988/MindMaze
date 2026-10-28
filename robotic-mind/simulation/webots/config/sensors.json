@@ -1,0 +1,6 @@
+{
+  "Scout-01": {"brightness": 1.0, "blur": 0, "noise": 0, "color_shift": 0, "fov": 1.15, "yaw": 0},
+  "Scout-02": {"brightness": 0.98, "blur": 0, "noise": 0, "color_shift": 0, "fov": 1.15, "yaw": 0},
+  "Scout-03": {"brightness": 1.02, "blur": 0, "noise": 0, "color_shift": 0, "fov": 1.15, "yaw": 0},
+  "Scout-04": {"brightness": 1.0, "blur": 0, "noise": 0, "color_shift": 0, "fov": 1.15, "yaw": 0}
+}

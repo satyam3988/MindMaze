@@ -1,0 +1,140 @@
+#VRML_SIM R2025a utf8
+# template language: javascript
+# Compact Vector-inspired model, scaled to fit the existing 10 cm corridors.
+PROTO VectorRobot [
+  field SFVec3f translation 0 0 0.001
+  field SFRotation rotation 0 0 1 0
+  field SFString controller "vector_maze_controller"
+  field MFString controllerArgs []
+  field SFFloat wheelRadius 0.018
+  field SFFloat wheelSeparation 0.048
+  field SFFloat maxWheelSpeed 10
+] {
+  Robot {
+    translation IS translation
+    rotation IS rotation
+    name "Vector-inspired robot"
+    controller IS controller
+    controllerArgs IS controllerArgs
+    supervisor TRUE
+    children [
+      Receiver { name "overhead RGB receiver" channel 11 bufferSize 2000000 }
+      Pose {
+        translation 0 0 0.027
+        children [
+          Shape {
+            appearance DEF BODY PBRAppearance {
+              baseColor 0.18 0.20 0.23
+              roughness 0.55
+              metalness 0
+            }
+            geometry Box { size 0.060 0.038 0.024 }
+          }
+        ]
+      }
+      Pose {
+        translation 0.014 0 0.045
+        children [
+          Shape {
+            appearance USE BODY
+            geometry Box { size 0.028 0.038 0.026 }
+          }
+        ]
+      }
+      # Cyan eyes on the front (+X), and a green forward bumper.
+      %< for (const y of [-0.009, 0.009]) { >%
+      Pose {
+        translation 0.0285 %<= y >% 0.047
+        children [ Shape {
+          appearance PBRAppearance {
+            baseColor 0.05 0.95 0.8
+            emissiveColor 0.02 0.4 0.3
+            metalness 0
+          }
+          geometry Box { size 0.001 0.010 0.008 }
+        } ]
+      }
+      %< } >%
+      Pose {
+        translation 0.030 0 0.022
+        children [ Shape {
+          appearance PBRAppearance { baseColor 0.3 0.8 0.2 metalness 0 }
+          geometry Box { size 0.002 0.030 0.006 }
+        } ]
+      }
+      # Plain white top marker area; no AprilTag processing in this milestone.
+      Pose {
+        translation 0.006 0 0.059
+        children [ Shape {
+          appearance PBRAppearance { baseColor 1 1 1 metalness 0 roughness 1 }
+          geometry Box { size 0.024 0.024 0.001 }
+        } ]
+      }
+      %< for (const [side, sign] of [['left', 1], ['right', -1]]) {
+           const y = sign * fields.wheelSeparation.value / 2;
+           const r = fields.wheelRadius.value;
+      >%
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0 1 0
+          anchor 0 %<= y >% %<= r >%
+        }
+        device [
+          RotationalMotor {
+            name "%<= side >% wheel motor"
+            maxVelocity IS maxWheelSpeed
+            maxTorque 0.04
+            acceleration 40
+          }
+        ]
+        endPoint Solid {
+          translation 0 %<= y >% %<= r >%
+          name "%<= side >% wheel"
+          contactMaterial "wheel"
+          children [
+            DEF WHEEL_%<= side >% Pose {
+              rotation 1 0 0 1.57079632679
+              children [ Shape {
+                appearance PBRAppearance {
+                  baseColor 0.05 0.055 0.06 roughness 1 metalness 0
+                }
+                geometry Cylinder { radius IS wheelRadius height 0.008 subdivision 24 }
+              } ]
+            }
+          ]
+          boundingObject USE WHEEL_%<= side >%
+          physics Physics { density -1 mass 0.012 }
+        }
+      }
+      %< } >%
+      Solid {
+        translation -0.022 0 0.006
+        name "rear skid"
+        contactMaterial "caster"
+        children [ Shape {
+          appearance USE BODY
+          geometry Sphere { radius 0.006 subdivision 2 }
+        } ]
+        boundingObject Sphere { radius 0.006 }
+        physics Physics { density -1 mass 0.002 }
+      }
+    ]
+    boundingObject Group {
+      children [
+        Pose {
+          translation 0 0 0.027
+          children [ Box { size 0.060 0.038 0.024 } ]
+        }
+        Pose {
+          translation 0.014 0 0.045
+          children [ Box { size 0.028 0.038 0.026 } ]
+        }
+      ]
+    }
+    physics Physics {
+      density -1
+      mass 0.14
+      centerOfMass [ -0.004 0 0.022 ]
+    }
+  }
+}

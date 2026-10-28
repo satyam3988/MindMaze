@@ -1,0 +1,61 @@
+{
+  "status": "passed",
+  "ai": {
+    "provider": "Nebius Token Factory",
+    "model": "nvidia/nemotron-3-super-120b-a12b",
+    "mode": "nebius",
+    "strict": true
+  },
+  "mission_id": "e9b5e9ec05234234915d60138bebf5d3",
+  "created_at": "2026-10-28T23:11:05.006724+00:00",
+  "completed_at": "2026-10-28T23:11:33.178067+00:00",
+  "result": {
+    "summary": "Group mind discovered 3 unique red objects, cleared 4 regions, involved 4 agents, merged 0 duplicates, achieved 1.0 coverage.",
+    "unique_objects": 3,
+    "regions_cleared": 4,
+    "participating_agents": 4,
+    "duplicates_merged": 0,
+    "coverage": 1.0
+  },
+  "llm_calls": [
+    {
+      "provider": "Nebius Token Factory",
+      "model": "nvidia/nemotron-3-super-120b-a12b",
+      "purpose": "understand",
+      "request": {
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "purpose": "understand",
+        "duration_ms": 2603,
+        "timestamp": "2026-10-28T23:11:07.615275+00:00",
+        "attempts": 1
+      },
+      "summary": "Nebius Token Factory completed understand"
+    },
+    {
+      "provider": "Nebius Token Factory",
+      "model": "nvidia/nemotron-3-super-120b-a12b",
+      "purpose": "plan",
+      "request": {
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "purpose": "plan",
+        "duration_ms": 3202,
+        "timestamp": "2026-10-28T23:11:10.829522+00:00",
+        "attempts": 1
+      },
+      "summary": "Nebius Token Factory completed plan"
+    },
+    {
+      "provider": "Nebius Token Factory",
+      "model": "nvidia/nemotron-3-super-120b-a12b",
+      "purpose": "synthesize",
+      "request": {
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "purpose": "synthesize",
+        "duration_ms": 2571,
+        "timestamp": "2026-10-28T23:11:33.176072+00:00",
+        "attempts": 1
+      },
+      "summary": "Nebius Token Factory completed synthesize"
+    }
+  ]
+}
